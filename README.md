@@ -31,7 +31,7 @@ Usage: java -jar jackrabbit-migration-query-tool-1.0.0-jar-with-dependencies.jar
 
 <h1>Build</h1> 
 <p>You can package it as a jar and include it as part of your application. Run<p> 
-git 
+
 <p>mvn packge</p>
 
 <p>You can package it include all the dependencies so the jar can be executed by itself. Run</p>
@@ -40,7 +40,7 @@ git
 
 
 <h1>Jackrabbit Repository Configuration Files</h1>
-<p>Basic Jackrabbit clustering repository configuration files are included in the config directory for your convenience. It uses MySQL as the backend database. You can further customize those files
+<p>We have included some basic Jackrabbit repository configuration files in the config directory. They include using Derby or MySQL as database storage. You can further customize those files
 to suit your own needs.</p>
 
 <p>Comments and suggestions are welcomed.</p>

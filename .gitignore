@@ -1,6 +1,5 @@
 *.class
 target
-config-dev
 
 # Eclipse files #
 .classpath

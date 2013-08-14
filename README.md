@@ -30,13 +30,16 @@ Usage: java -jar jackrabbit-migration-query-tool-1.0.0-jar-with-dependencies.jar
 </ul>
 
 <h1>Build</h1> 
-<p>You can package it as a jar and include it as part of your application. Run<p> 
+<p>You can package it as a jar and include it as part of your application. Run</p> 
 
-<p>mvn packge</p>
+<p>mvn package</p>
 
-<p>You can package it include all the dependencies so the jar can be executed by itself. Run</p>
+<p>You can package it to include all the dependencies so the jar can be executed by itself. Run</p>
 
-<p>mvn packge -Papplication</p>
+<p>mvn package -Papplication</p>
+
+<p>Note: please update the paths in the Unit tests as appropriate or skip the tests</p>
+<p>mvn package -Dmaven.test.skip=true</p>
 
 
 <h1>Jackrabbit Repository Configuration Files</h1>

@@ -1,5 +1,8 @@
 *.class
 target
+config-dev
+AppTest2.java
+AppTest3.java
 
 # Eclipse files #
 .classpath

@@ -54,17 +54,22 @@ public class App {
 	private static String cndPath="";
 	private static String query="";
 	private static String queryType="";
+	private static long nodeLimit;
 	
 	
     public static void main(String[] args) {
     	if (args.length == 0 || args.length == 1 && args[0].equals("-h")) {
-    		System.out.println("Usage: java -jar jackrabbit-migration-query-tool-1.0.0-jar-with-dependencies.jar --src src --src-conf conf [--src-repo-path path] [--dest dest] [--dest-conf conf] [--dest-repo-path path] [--cnd cnd] [--query query] [--query-type type]");
+    		System.out.println("Usage: java -jar jackrabbit-migration-query-tool-1.0.0-jar-with-dependencies.jar " + 
+    				"--src src --src-conf conf [--src-repo-path path] [--dest dest] [--dest-conf conf] [--dest-repo-path path] " +
+    				"[--cnd cnd] [--node-limit limit] " +
+    				"[--query query] [--query-type type]");
     		System.out.println("\t --src source repository directory");
     		System.out.println("\t --src-conf source repository configuration file");
     		System.out.println("\t --src-repo-path path to source node to copy from; default is \"/\"");
     		System.out.println("\t --dest destination repository directory");    		
     		System.out.println("\t --dest-conf source repository configuration file");    		
     		System.out.println("\t --dest-repo-path path to destination node to copy to; default is \"/\"");
+    		System.out.println("\t --node-limit size to partition nodes with before copying. If it is not supplied, no partitioning is performed");
     		System.out.println("\t --cnd common node type definition file");
     		System.out.println("\t --query query to run in src. If --query is specified, then --dest, --dest-conf, --dest-repo-path and --cnd will be ignored.");
     		System.out.println("\t --query-type query type (sql, xpath, JCR-SQL2); default is JCR-SQL2");
@@ -83,6 +88,8 @@ public class App {
     			srcRepoPath=args[i+1];
     		} else if (args[i].equals("--dest-repo-path") && i+1<args.length) {
     			destRepoPath=args[i+1];
+    		} else if (args[i].equals("--node-limit") && i+1<args.length) {
+    			nodeLimit=Long.parseLong(args[i+1]);
     		} else if (args[i].equals("--cnd") && i+1<args.length) {
     			cndPath=args[i+1];
     		}  else if (args[i].equals("--query") && i+1<args.length) {
@@ -149,7 +156,10 @@ public class App {
 	    	
 	    	try {
 	    		RepositoryManager.registerCustomNodeTypes(destSession, cndPath);
-				NodeCopier.copy(srcSession, destSession, srcRepoPath, destRepoPath, true);
+	    		if (nodeLimit == 0)
+	    			NodeCopier.copy(srcSession, destSession, srcRepoPath, destRepoPath, true);
+	    		else
+	    			NodeCopier.copy(srcSession, destSession, srcRepoPath, destRepoPath, nodeLimit, true);
 				log.info("Copying "+srcSession.getWorkspace().getName()+" to "+destSession.getWorkspace().getName()+ " for "+srcRepoDir + " done.");
 	    	} catch (ParseException e) {
 				log.error(e.getMessage(), e);
@@ -171,7 +181,11 @@ public class App {
 	    		Session wsDestSession=destSf.getSession(workspace);
 	    		try {
 	    			RepositoryManager.registerCustomNodeTypes(wsDestSession, cndPath);
-	    			NodeCopier.copy(wsSession, wsDestSession, srcRepoPath, destRepoPath, true);
+	    			if (nodeLimit == 0)
+	    				NodeCopier.copy(wsSession, wsDestSession, srcRepoPath, destRepoPath, true);
+	    			else {
+	    				NodeCopier.copy(wsSession, wsDestSession, srcRepoPath, destRepoPath, nodeLimit, true);
+	    			}	    				
 	    			log.info("Copying "+wsSession.getWorkspace().getName()+" to "+wsDestSession.getWorkspace().getName()+ " for " + srcRepoDir + " done.");
 	    		} catch (IOException e) {
 	    			log.error(e.getMessage(), e);

@@ -26,6 +26,7 @@ import jackrabbit.session.SessionFactory;
 import jackrabbit.session.SessionFactoryImpl;
 import jackrabbit.tool.NodeCopier;
 import jackrabbit.util.NodePathModifier;
+import jackrabbit.util.NodeUtils;
 import jackrabbit.util.PathTransformer;
 import jackrabbit.util.RegexModifier;
 
@@ -54,14 +55,23 @@ public class AppTest {
 	protected static Log log=LogFactory.getLog(AppTest.class);
 	
 	//change the following paths as appropriate
-	private static final String REPO_ROOT="/root/sites";
-	private static final String REPO_PATH="/repository";
-	private final String srcRepoDir=REPO_PATH+"/folder";
-	private final String srcRepoPath=REPO_ROOT+"/folder";
+//	private static final String REPO_ROOT="/root/sites";
+//	private static final String REPO_PATH="/repository";
+//	private final String srcRepoDir=REPO_PATH+"/folder";
+//	private final String srcRepoPath=REPO_ROOT+"/folder";
+//	private final String destRepoDir=REPO_PATH+"/all-mysql-1";
+//	private final String srcConf="config/repository_derby.xml";
+//	private final String destConf="config/repository-mysql-1.xml";
+//	private final String cndPath="config/base_nodetypes.cnd";
+	
+	private final String FIRMSITES_ROOT="/fsp_root/sites";
+	private final String REPO_PATH="/firmsites/repository";
+	private final String srcRepoDir=REPO_PATH+"/a/aeellp";
+	private final String srcRepoPath=FIRMSITES_ROOT+"/aeellp";
 	private final String destRepoDir=REPO_PATH+"/all-mysql-1";
-	private final String srcConf="config/repository_derby.xml";
-	private final String destConf="config/repository-mysql-1.xml";
-	private final String cndPath="config/base_nodetypes.cnd";
+	private final String srcConf="config-dev/repository_derby.xml";
+	private final String destConf="config-dev/repository-mysql-1.xml";
+	private final String cndPath="config-dev/base_nodetypes.cnd";
 	
 	private RepositoryImpl src;
 	private RepositoryImpl dest;
@@ -91,13 +101,13 @@ public class AppTest {
     	RepositoryManager.registerCustomNodeTypes(destSession, cndPath);
 	}
 	
-	@Test
+	//@Test
     public void testApp() throws Exception {
     	if (src==null)
     		return;
     	NodePathModifier modifier=new RegexModifier("(.*)\\/(\\w)(\\w+)$", "$1/$2");
 		String destRepoPath=PathTransformer.transform(srcRepoPath, modifier);
-		NodeCopier.copy(srcSession, destSession, srcRepoPath, destRepoPath, true);		
+		NodeCopier.copy(srcSession, destSession, srcRepoPath, destRepoPath, true);	
 		List<String> destWkspaces=RepositoryManager.getDestinationWorkspaces(srcSession, destSession);
 		for (String workspace:destWkspaces) {
     		Session wsSession=srcSf.getSession(workspace);
@@ -106,9 +116,30 @@ public class AppTest {
 			NodeCopier.copy(wsSession, wsDestSession, srcRepoPath, destRepoPath, true);
 			wsSession.logout();
 			wsDestSession.logout();
-		}		
+		}	
+		NodeUtils.explore(destSession.getNode(FIRMSITES_ROOT+"/a/aeellp"));
     }
 	
+	@Test
+    public void testAppWithNodeLimit() throws Exception {
+    	if (src==null)
+    		return;
+    	NodePathModifier modifier=new RegexModifier("(.*)\\/(\\w)(\\w+)$", "$1/$2");
+		String destRepoPath=PathTransformer.transform(srcRepoPath, modifier);
+		NodeCopier.copy(srcSession, destSession, srcRepoPath, destRepoPath, 10000, true);
+		List<String> destWkspaces=RepositoryManager.getDestinationWorkspaces(srcSession, destSession);
+		for (String workspace:destWkspaces) {
+    		Session wsSession=srcSf.getSession(workspace);
+    		Session wsDestSession=destSf.getSession(workspace);
+    		RepositoryManager.registerCustomNodeTypes(wsDestSession, cndPath);
+			NodeCopier.copy(wsSession, wsDestSession, srcRepoPath, destRepoPath, 10000, true);
+			wsSession.logout();
+			wsDestSession.logout();
+		}	
+		NodeUtils.explore(destSession.getNode(FIRMSITES_ROOT+"/a/aeellp"));
+    }
+	
+		
 	@After 
 	public void tearDown() throws AccessDeniedException, VersionException, LockException, ConstraintViolationException, PathNotFoundException, RepositoryException {
 		if (srcSession!=null)

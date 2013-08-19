@@ -17,8 +17,6 @@
 
 package jackrabbit.query;
 
-import static org.junit.Assert.*;
-
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
@@ -45,9 +43,9 @@ public class QuerierTest {
 		
 	protected static Log log=LogFactory.getLog(QuerierTest.class);
 	
-	private final String REPO_PATH="/firmsites/repository";
-	private final String repoDir=REPO_PATH+"/all-mysql-1";
-	private final String repoConf="config-dev/repository-mysql-1.xml";
+	//change as needed
+	private final String repoDir="/repository";
+	private final String repoConf="config/repository-mysql-1.xml";
 	
 	private RepositoryImpl repo;
 	private Session session;
@@ -64,8 +62,7 @@ public class QuerierTest {
 	
 	@Test
 	public void testQueryByPropertyNode() throws Exception {
-		NodeIterator it=Querier.queryBySQLNode(session, "select * from [fsp:page] as page where ISDESCENDANTNODE(page, [/fsp_root/sites/a]) and ([prop:fsp]='AttorneyProfile' or [prop:fsp]='FS3Home')");
-		log.info(it.getSize());
+		NodeIterator it=Querier.queryBySQLNode(session, "select * from [ns:child] as child where ISDESCENDANTNODE(child, [/root/nodes/node]) and ([ns:property1]='value1' or [ns:property2]='value2')");
 		while (it.hasNext()) {
         	Node node = it.nextNode();
         	log.info(node.getPath());
@@ -74,8 +71,7 @@ public class QuerierTest {
 	
 	@Test
 	public void testQueryByPropertyRow() throws Exception {
-		RowIterator it=Querier.queryBySQLRow(session, "select [prop:name] from [fsp:page] as page where ISDESCENDANTNODE(page, [/fsp_root/sites/a]) and ([prop:fsp]='AttorneyProfile' or [prop:fsp]='FS3Home')");
-		log.info(it.getSize());
+		RowIterator it=Querier.queryBySQLRow(session, "select [ns:property] from [ns:child] as child where ISDESCENDANTNODE(child, [/root/nodes/node]) and ([ns:property1]='value1' or [ns:property2]='value2')");
 		while (it.hasNext()) {
         	Row row = it.nextRow();
         	Value[] values=row.getValues();
@@ -89,8 +85,7 @@ public class QuerierTest {
 	
 	@Test
 	public void testFullTextSearch() throws RepositoryException {
-		NodeIterator contents=Querier.queryBySQLNode(session, "select * from [fsp:wigContainer] as content where ISDESCENDANTNODE(content, [/fsp_root/sites/a]) and contains(content.[prop:contentTemplate], 'injured +workers')");
-		assertTrue(contents.getSize()>0);
+		NodeIterator contents=Querier.queryBySQLNode(session, "select * from [ns:content] as content where ISDESCENDANTNODE(content, [/root/nodes/node]) and contains(content.[ns:property], 'value1 +value2')");
 		while (contents.hasNext()) {
         	Node node = contents.nextNode();
         	log.info(node.getPath());

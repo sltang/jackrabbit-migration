@@ -1,5 +1,5 @@
-<h1>Apache Jackrabbit Migration and Query Tool</h1>
-<h2>Introduction</h2>
+<h>Apache Jackrabbit Migration and Query Tool</h2>
+<h3>Introduction</h3>
 <p>Apach Jackarbbit is an open-source implementation of Java Content Repository (JCR). Its flexibility in data schema and features make it a popular
 choice for storing structured and unstructured contents.
 While the migration/backup tools provided by Jackrabbit are sufficient in most cases (http://wiki.apache.org/jackrabbit/BackupAndMigration), there 
@@ -18,9 +18,9 @@ MySQL is used as the backend database (on Windows), when importing a large XML i
 <p>
 ERROR org.apache.jackrabbit.core.cluster.ClusterNode$WorkspaceUpdateChannel - Unexpected error while committing log entry.
 java.lang.RuntimeException: Unable to reset the Stream.
-<span style="margin-left: 20px">	at org.apache.jackrabbit.core.util.db.ConnectionHelper.execute(ConnectionHelper.java:525)
+<div style="margin-left: 10px;">	at org.apache.jackrabbit.core.util.db.ConnectionHelper.execute(ConnectionHelper.java:525)
     ...
-</span>
+</div>
 </p>
 <p>   
 It turns out that the default value (1MB) of MySQL's max_allowed_packet on Windows is too small. You can fix that by setting max_allowed_packet to a 
@@ -30,7 +30,7 @@ We address the issue by partitioning the source node to subnodes of size under a
 each subnode separately. Since references may exist between partitioned subnodes, we need to make some adjustments to handle  
 those references when importing. Once that is done, import/export works without changing the max_allowed_packet value.
 </p>
-<h2>Usage</h2>
+<h3>Usage</h3>
 <pre>
 $java -jar jackrabbit-migration-query-1.0.0-jar-with-dependencies.jar
 Usage: java -jar jackrabbit-migration-query-tool-1.0.0-jar-with-dependencies.jar --src src --src-conf conf [--src-repo-path path] [--dest dest] [--dest-conf conf] 
@@ -48,13 +48,13 @@ Usage: java -jar jackrabbit-migration-query-tool-1.0.0-jar-with-dependencies.jar
 </pre>
 
        
-<h2>Requirements</h2>
+<h3>Requirements</h3>
 <ul>
 <li>JDK 1.6 or above.</li>
 <li>Maven 2.2.1 or above.</li>
 </ul>
 
-<h2>Build</h2> 
+<h3>Build</h3> 
 <p>You can package it as a jar and include it as part of your application. Run</p> 
 
 <p>mvn package</p>
@@ -67,7 +67,7 @@ Usage: java -jar jackrabbit-migration-query-tool-1.0.0-jar-with-dependencies.jar
 <p>mvn package -Dmaven.test.skip=true</p>
 
 
-<h2>Jackrabbit Repository Configuration Files</h2>
+<h3>Jackrabbit Repository Configuration Files</h3>
 <p>We have included some basic Jackrabbit repository configuration files in the config directory. They include using Derby or MySQL as database storage. You can further customize those files
 to suit your own needs.</p>
 

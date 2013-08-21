@@ -1,9 +1,3 @@
-<style type="text/css">
-.code {
-	margin-left: 20px;
-	font-family: courier;
-}
-</style>
 <h2>Apache Jackrabbit Migration and Query Tool</h2>
 <h3>Introduction</h3>
 <p>Apach Jackarbbit is an open-source implementation of Java Content Repository (JCR). Its flexibility in data schema and features make it a popular
@@ -21,7 +15,7 @@ As such, one can exercise more refined control over the repository source(s).</p
 copied is too large to fit into memory when using those functions. First, if the node involved is too large, there may be out of memory errors.
 Second, even if there is no memory issue, the underlying storage may impose restrictions on the size of data packets it receives. For instance, if 
 MySQL is used as the backend database (on Windows), when importing a large XML into a repository, it may fail with the following error:</p>
-<div class="code">
+<div>
 ERROR org.apache.jackrabbit.core.cluster.ClusterNode$WorkspaceUpdateChannel - Unexpected error while committing log entry.<br />
 java.lang.RuntimeException: Unable to reset the Stream.
 	at org.apache.jackrabbit.core.util.db.ConnectionHelper.execute(ConnectionHelper.java:525)

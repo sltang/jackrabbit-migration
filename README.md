@@ -1,3 +1,9 @@
+<style type="text/css">
+.code {
+	margin-left: 20px;
+	font-family: courier;
+}
+</style>
 <h2>Apache Jackrabbit Migration and Query Tool</h2>
 <h3>Introduction</h3>
 <p>Apach Jackarbbit is an open-source implementation of Java Content Repository (JCR). Its flexibility in data schema and features make it a popular
@@ -11,11 +17,11 @@ nodes under a single node. (There are some known performance issues if a node ha
 This tool can be run in the command line to copy one repository to another or as a subnode of another repository. 
 You can also use this tool to run queries in SQL, XPATH or JCR-SQL2 against a repository. The tool can also be used as a standard library in your application. 
 As such, one can exercise more refined control over the repository source(s).</p>
-<p>Our migration tool is based on the exportDocumentView and importXML functions in JCR. We explore the case where the node or repository to be 
+<p>Our migration tool is based on the exportSystemView and importXML functions in JCR. We explore the case where the node or repository to be 
 copied is too large to fit into memory when using those functions. First, if the node involved is too large, there may be out of memory errors.
 Second, even if there is no memory issue, the underlying storage may impose restrictions on the size of data packets it receives. For instance, if 
 MySQL is used as the backend database (on Windows), when importing a large XML into a repository, it may fail with the following error:</p>
-<div style="margin-left: 10px; font-family: courier">
+<div class="code">
 ERROR org.apache.jackrabbit.core.cluster.ClusterNode$WorkspaceUpdateChannel - Unexpected error while committing log entry.<br />
 java.lang.RuntimeException: Unable to reset the Stream.
 	at org.apache.jackrabbit.core.util.db.ConnectionHelper.execute(ConnectionHelper.java:525)
@@ -41,7 +47,7 @@ Usage: java -jar jackrabbit-migration-query-tool-1.0.0-jar-with-dependgit encies
          --dest destination repository directory
          --dest-conf source repository configuration file
          --dest-repo-path path to destination node to copy to; default is "/"
-         --node-limit size to partition nodes with before copying. If it is not supplied, no partitioning is performed
+         --node-limit size (in bytes) to partition nodes with before copying. If it is not supplied, no partitioning is performed
          --cnd common node type definition file
          --query JCR-SQL2 query to run in src. If --query is specified, then --dest, --dest-conf, --dest-repo-path and --cnd will be ignored.
          --query-type query type (SQL, XPATH, JCR-SQL2); default is JCR-SQL2"

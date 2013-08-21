@@ -19,6 +19,7 @@ package jackrabbit.util;
 
 import java.util.AbstractMap;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -93,15 +94,7 @@ public class NodeUtils {
         }
 		return size;
 	}
-	
-	private static MyProperty getProperties(PropertyIterator properties) throws ValueFormatException, RepositoryException {
-		MyProperty prop=new NodeUtils.MyProperty(0, false);
-		while (properties.hasNext()) {
-            prop.add(getProperty(properties.nextProperty()));
-        }
-		return prop;
-	}
-	
+		
 	/**
 	 * Get size of value(s) as String of a property
 	 * @param property
@@ -122,21 +115,6 @@ public class NodeUtils {
 		return size;		
 	}
 	
-	private static MyProperty getProperty(Property property) throws ValueFormatException, RepositoryException {
-		long size=0;
-		boolean isPropertyReference=false;
-		if (property.getDefinition().isMultiple()) {
-            Value[] values = property.getValues();
-            for (int i=0; i < values.length; i++) {
-            	size+=values[i].getString().getBytes().length;
-            }
-        } else {
-        	size+=property.getValue().getString().getBytes().length;
-    		isPropertyReference=property.getType()==PropertyType.PATH||property.getType()==PropertyType.REFERENCE;
-        }
-		return new NodeUtils.MyProperty(size, isPropertyReference);		
-	}
-	
 	/**
 	 * Get sum of all properties sizes of all descendants of a node, including the node itself
 	 * @param node
@@ -152,15 +130,6 @@ public class NodeUtils {
 		return size;
 	}
 	
-	private static MyProperty getDescendantsProperty(Node node) throws RepositoryException {
-		MyProperty property=getProperties(node.getProperties());
-		NodeIterator children = node.getNodes();
-        while (children.hasNext()) {
-        	property.add(getDescendantsProperty(children.nextNode()));
-        }	
-		return property;
-	}
-	
 	/**
 	 * Partition a node based on the size of a node (and its descendants) 
 	 * @param node
@@ -169,7 +138,7 @@ public class NodeUtils {
 	 * exceeds the limit or not
 	 * @throws RepositoryException
 	 */
-	public static Set<Map.Entry<String, Boolean>> partitionBySize(Node node, long limit) throws RepositoryException {
+	public static Set<Map.Entry<String, Boolean>> partition(Node node, long limit) throws RepositoryException {
 		Set<Map.Entry<String, Boolean>> descendants = new TreeSet<Map.Entry<String, Boolean>>(new Comparator<Map.Entry<String, Boolean>>() {
             public int compare(Map.Entry<String, Boolean> a, Map.Entry<String, Boolean> b) {
 	         	if (a.getValue()==b.getValue()) 
@@ -186,7 +155,7 @@ public class NodeUtils {
 			if (descendantsSize < limit) {
 				descendants.add(new AbstractMap.SimpleEntry<String, Boolean>(child.getPath(), false));
 			} else {
-				descendants.addAll(partitionBySize(child, limit));
+				descendants.addAll(partition(child, limit));
 			}
 			size+=descendantsSize;
 		}
@@ -199,76 +168,4 @@ public class NodeUtils {
 		return descendants;
 	}
 	
-	/**
-	 * Partition a node based on the size of a node (and its descendants) and whether it (and its descendants) have properties that are
-	 * references
-	 * @param node
-	 * @param limit - node size limit
-	 * @return a sorted set containing the paths of the nodes in the partition and whether a node in the partition has property references
-	 * @throws RepositoryException
-	 */
-	public static Set<Map.Entry<String, Boolean>> partition(Node node, long limit) throws RepositoryException {
-		Set<Map.Entry<String, Boolean>> descendants = new TreeSet<Map.Entry<String, Boolean>>(new Comparator<Map.Entry<String, Boolean>>() {
-            public int compare(Map.Entry<String, Boolean> a, Map.Entry<String, Boolean> b) {
-	         	if (a.getValue()==b.getValue()) 
-	         		return (a.getKey().toString().toLowerCase()).compareTo(b.getKey().toString().toLowerCase());
-	         	else
-	         		return -(a.getValue().toString().toLowerCase()).compareTo(b.getValue().toString().toLowerCase());
-            }
-		});
-		MyProperty myProp=new NodeUtils.MyProperty(0, false);
-		PropertyIterator properties = node.getProperties();
-	    while (properties.hasNext()) {
-	       Property property=properties.nextProperty();
-	       MyProperty p=getProperty(property);
-	       myProp.add(p);
-	       if (p.getHasPropertyReference()) {
-	       	 	descendants.add(new AbstractMap.SimpleEntry<String, Boolean>(property.getNode().getPath(), true));
-	       }    	   
-	    }
-		NodeIterator children = node.getNodes();
-        while (children.hasNext()) {
-        	Node child=children.nextNode();
-        	MyProperty p=getDescendantsProperty(child);
-        	if (p.getSize() < limit && !p.getHasPropertyReference()) {
-	    	    descendants.add(new AbstractMap.SimpleEntry<String, Boolean>(child.getPath(), false));
-        	} else {
-        		descendants.addAll(partition(child, limit));
-        	}
-        	myProp.add(p);
-        }
-        if (myProp.getSize() < limit && !myProp.getHasPropertyReference()) {
-        	descendants.clear();
-        	descendants.add(new AbstractMap.SimpleEntry<String, Boolean>(node.getPath(), false));
-        } else {
-        	descendants.add(new AbstractMap.SimpleEntry<String, Boolean>(node.getPath(), true));
-        }
-        return descendants;
-	}
-		
-	/**
-	 * Helper class for storing node size and property reference existence
-	 *
-	 */
-	static class MyProperty {
-		private long size;
-		private boolean hasPropertyReference;
-		
-		public long getSize() {
-			return this.size;
-		}
-		public boolean getHasPropertyReference() {
-			return this.hasPropertyReference;
-		}
-		public MyProperty(long size, boolean isPropertyReference) {
-			this.size=size;
-			this.hasPropertyReference=isPropertyReference;
-		}
-		public void add(MyProperty other) {
-			this.size=this.size+other.size;
-			this.hasPropertyReference=this.hasPropertyReference||other.hasPropertyReference;
-		}
-	}
-	
-
 }

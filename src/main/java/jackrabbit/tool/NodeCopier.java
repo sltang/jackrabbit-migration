@@ -77,28 +77,26 @@ public class NodeCopier {
 		ByteArrayInputStream in=null;
 		String nodeName=srcPath.replaceAll(".*/(\\w+)$", "$1");
 		try {
-			srcSession.exportDocumentView(srcPath+relPath, out, true, noRecurse);
+			srcSession.exportSystemView(srcPath+relPath, out, true, noRecurse);
 			in=new ByteArrayInputStream(out.toByteArray());
 			try {
 				if (!relPath.isEmpty()) {
 					relPath="/"+nodeName+relPath.substring(0, relPath.lastIndexOf("/"));
 					createNodes(srcSession, destSession, srcPath, destPath, relPath, addNodeType);
-					//remove existing item in destination to avoid duplicate nodes
+					//to avoid copying the same node twice
 					if (destSession.itemExists(destPath+relPath+"/"+nodeName)) {
-						destSession.removeItem(destPath+relPath+"/"+nodeName);
+						return;
 					}
 				}
 				//use session.importXML instead of Workspace.importXML to prevent constraint violations
 				destSession.importXML(destPath+relPath, in, ImportUUIDBehavior.IMPORT_UUID_COLLISION_REMOVE_EXISTING);
 				destSession.save();
-				log.info(srcSession.getWorkspace().getName()+" Node copied from "+srcPath+" to "+destPath+relPath+ " with relative path " + relPath);
-			} catch (ItemNotFoundException e) {
-				//do nothing
-				//log.warn("ItemNotFoundException expected due to the set up");
-			} catch (ConstraintViolationException e) {
-				//do nothing
-				//log.warn("ConstraintViolationException expected due to the set up");
-			}
+				log.info(srcSession.getWorkspace().getName()+" workspace: node copied from "+srcPath+" to "+destPath+relPath+ " with relative path " + relPath);
+			 } catch (ItemNotFoundException e) {
+		         //do nothing
+			 } catch (ConstraintViolationException e) {
+		         //do nothing
+			 }
 		} finally {
 			if (in!=null) {
 				IOUtils.closeQuietly(in);
@@ -108,13 +106,13 @@ public class NodeCopier {
 	}
 	
 	/**
-	 * Copy node with srcPath from one repository to another using the export and import functions by first partitioning node to subnodes subject 
-	 * to size limit and existence of property references before exporting
+	 * Copy node with srcPath from one repository to another using the export and import functions by first partitioning node to subnodes of size less than 
+	 * limit before exporting
 	 * @param srcSession
 	 * @param destSession
 	 * @param srcPath 
 	 * @param destPath 
-	 * @param limit - size of a node in the partition to copy recursively
+	 * @param limit - size of a node in the partition
 	 * @param createNodeType
 	 * @throws RepositoryException
 	 * @throws IOException
@@ -128,33 +126,6 @@ public class NodeCopier {
 		Node node=srcSession.getNode(srcPath);
 		int srcPathLength=srcPath.length();
 		Set<Map.Entry<String, Boolean>> descendants=NodeUtils.partition(node, limit);
-		for (Map.Entry<String, Boolean> entry: descendants) {
-			String relPath=entry.getKey().substring(srcPathLength);
-			copy(srcSession, destSession, srcPath, destPath, relPath, entry.getValue(), addNodeType);
-		}		
-	}
-	
-	/**
-	 * Copy node with srcPath from one repository to another using the export and import functions by first partitioning node to subnodes subject 
-	 * to size limit only before exporting
-	 * @param srcSession
-	 * @param destSession
-	 * @param srcPath 
-	 * @param destPath 
-	 * @param limit - size of a node in the partition to copy recursively
-	 * @param createNodeType
-	 * @throws RepositoryException
-	 * @throws IOException
-	 */
-	public static void copyBySizeLimitOnly(Session srcSession, Session destSession, String srcPath, String destPath, long limit, boolean addNodeType) throws RepositoryException, IOException {
-		if (!srcSession.nodeExists(srcPath)) {
-			log.error(srcPath+ " does not exist");
-			return;
-		}
-		createNodes(srcSession, destSession, destPath, addNodeType);
-		Node node=srcSession.getNode(srcPath);
-		int srcPathLength=srcPath.length();
-		Set<Map.Entry<String, Boolean>> descendants=NodeUtils.partitionBySize(node, limit);
 		for (Map.Entry<String, Boolean> entry: descendants) {
 			String relPath=entry.getKey().substring(srcPathLength);
 			copy(srcSession, destSession, srcPath, destPath, relPath, entry.getValue(), addNodeType);

@@ -33,7 +33,7 @@ import jackrabbit.session.SessionFactoryImpl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.jackrabbit.core.RepositoryImpl;
+import org.apache.jackrabbit.api.JackrabbitRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,7 +47,7 @@ public class QuerierTest {
 	private final String repoDir="/repository";
 	private final String repoConf="config/repository-mysql-1.xml";
 	
-	private RepositoryImpl repo;
+	private JackrabbitRepository repo;
 	private Session session;
 
 	

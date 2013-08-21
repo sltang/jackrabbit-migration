@@ -19,6 +19,7 @@ package jackrabbit.repository;
 
 import javax.jcr.RepositoryException;
 
+import org.apache.jackrabbit.api.JackrabbitRepository;
 import org.apache.jackrabbit.core.RepositoryImpl;
 import org.apache.jackrabbit.core.config.RepositoryConfig;
 
@@ -32,9 +33,9 @@ public class RepositoryFactoryImpl implements RepositoryFactory {
 		this.dir=dir;
 	}
 
-	public RepositoryImpl getRepository() throws RepositoryException {
+	public JackrabbitRepository getRepository() throws RepositoryException {
 		RepositoryConfig repConfig=RepositoryConfig.create(conf, dir);
-		RepositoryImpl repo=RepositoryImpl.create(repConfig);
+		JackrabbitRepository repo=RepositoryImpl.create(repConfig);
 		return repo;
 	}
 }

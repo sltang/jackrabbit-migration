@@ -32,6 +32,7 @@ import jackrabbit.util.RegexModifier;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.PathNotFoundException;
+import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
@@ -41,7 +42,8 @@ import javax.jcr.version.VersionException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.jackrabbit.core.RepositoryImpl;
+import org.apache.jackrabbit.api.JackrabbitRepository;
+import org.apache.jackrabbit.core.TransientRepository;
 import org.junit.After;
 import org.junit.Before;
 
@@ -55,26 +57,17 @@ public class AppTest {
 	protected static Log log=LogFactory.getLog(AppTest.class);
 	
 	//change the following paths as appropriate
-//	private static final String REPO_ROOT="/root/sites";
-//	private static final String REPO_PATH="/repository";
-//	private final String srcRepoDir=REPO_PATH+"/folder";
-//	private final String srcRepoPath=REPO_ROOT+"/folder";
-//	private final String destRepoDir=REPO_PATH+"/all-mysql-1";
-//	private final String srcConf="config/repository_derby.xml";
-//	private final String destConf="config/repository-mysql-1.xml";
-//	private final String cndPath="config/base_nodetypes.cnd";
-	
-	private final String FIRMSITES_ROOT="/fsp_root/sites";
-	private final String REPO_PATH="/firmsites/repository";
-	private final String srcRepoDir=REPO_PATH+"/a/aeellp";
-	private final String srcRepoPath=FIRMSITES_ROOT+"/aeellp";
+	private static final String REPO_ROOT="/root/sites";
+	private static final String REPO_PATH="/repository";
+	private final String srcRepoDir=REPO_PATH+"/folder";
+	private final String srcRepoPath=REPO_ROOT+"/folder";
 	private final String destRepoDir=REPO_PATH+"/all-mysql-1";
-	private final String srcConf="config-dev/repository_derby.xml";
-	private final String destConf="config-dev/repository-mysql-1.xml";
-	private final String cndPath="config-dev/base_nodetypes.cnd";
+	private final String srcConf="config/repository_derby.xml";
+	private final String destConf="config/repository-mysql-1.xml";
+	private final String cndPath="config/base_nodetypes.cnd";
 	
-	private RepositoryImpl src;
-	private RepositoryImpl dest;
+	private JackrabbitRepository src;
+	private JackrabbitRepository dest;
 	private SessionFactory srcSf;
 	private SessionFactory destSf;
 	private Session srcSession;
@@ -99,9 +92,10 @@ public class AppTest {
     	srcSession=srcSf.getSession();
     	destSession=destSf.getSession();
     	RepositoryManager.registerCustomNodeTypes(destSession, cndPath);
+    	
 	}
 	
-	//@Test
+	@Test
     public void testApp() throws Exception {
     	if (src==null)
     		return;
@@ -117,7 +111,7 @@ public class AppTest {
 			wsSession.logout();
 			wsDestSession.logout();
 		}	
-		NodeUtils.explore(destSession.getNode(FIRMSITES_ROOT+"/a/aeellp"));
+		NodeUtils.explore(destSession.getNode("/fsp_root/sites/a/aeellp"));
     }
 	
 	@Test
@@ -136,7 +130,7 @@ public class AppTest {
 			wsSession.logout();
 			wsDestSession.logout();
 		}	
-		NodeUtils.explore(destSession.getNode(FIRMSITES_ROOT+"/a/aeellp"));
+		NodeUtils.explore(destSession.getNode("/fsp_root/sites/a/aeellp"));
     }
 	
 		

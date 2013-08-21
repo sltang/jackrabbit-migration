@@ -33,7 +33,7 @@ import jackrabbit.session.SessionFactoryImpl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.jackrabbit.core.RepositoryImpl;
+import org.apache.jackrabbit.api.JackrabbitRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,10 +46,9 @@ public class NodeUtilsTest {
 	private final String repoPath="/root/nodes/node";
 	private final String repoDir="/repository";
 	private final String conf="config/repository-mysql-1.xml";
-
 	
 	private Session ss;
-	private RepositoryImpl repo;
+	private JackrabbitRepository repo;
 	
 	@Before 
 	public void setUp() throws RepositoryException {
@@ -81,6 +80,7 @@ public class NodeUtilsTest {
 			log.info(entry.getKey()+" : "+entry.getValue());
 		}		
 	}
+	
 	
 	@After
 	public void tearDown() {

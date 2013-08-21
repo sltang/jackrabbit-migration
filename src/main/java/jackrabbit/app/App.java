@@ -38,8 +38,8 @@ import javax.jcr.query.RowIterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.jackrabbit.api.JackrabbitRepository;
 import org.apache.jackrabbit.commons.cnd.ParseException;
-import org.apache.jackrabbit.core.RepositoryImpl;
 
 public class App {
 	
@@ -120,9 +120,9 @@ public class App {
     	if (missingArgs) return;
     	    	
     	SimpleCredentials credentials=new SimpleCredentials("username", "password".toCharArray());
-    	    	
-    	RepositoryImpl src=null;
-    	RepositoryImpl dest=null;  	
+	
+    	JackrabbitRepository src=null;
+    	JackrabbitRepository dest=null;
     	RepositoryFactory destRf=null;
     	
 		RepositoryFactory srcRf=new RepositoryFactoryImpl(srcConf, srcRepoDir);

@@ -19,10 +19,10 @@ package jackrabbit.repository;
 
 import javax.jcr.RepositoryException;
 
-import org.apache.jackrabbit.core.RepositoryImpl;
+import org.apache.jackrabbit.api.JackrabbitRepository;
 
 public interface RepositoryFactory {
 
-	public RepositoryImpl getRepository() throws RepositoryException;
+	public JackrabbitRepository getRepository() throws RepositoryException;
 		
 }

@@ -83,19 +83,14 @@ public class NodeCopier {
 				if (!relPath.isEmpty()) {
 					relPath="/"+nodeName+relPath.substring(0, relPath.lastIndexOf("/"));
 					createNodes(srcSession, destSession, srcPath, destPath, relPath, addNodeType);
-					//to avoid copying the same node twice
-					if (destSession.itemExists(destPath+relPath+"/"+nodeName)) {
-						return;
-					}
 				}
-				//use session.importXML instead of Workspace.importXML to prevent constraint violations
 				destSession.importXML(destPath+relPath, in, ImportUUIDBehavior.IMPORT_UUID_COLLISION_REMOVE_EXISTING);
 				destSession.save();
 				log.info(srcSession.getWorkspace().getName()+" workspace: node copied from "+srcPath+" to "+destPath+relPath+ " with relative path " + relPath);
 			 } catch (ItemNotFoundException e) {
-		         //do nothing
+		         //do nothing as some references may not exist yet
 			 } catch (ConstraintViolationException e) {
-		         //do nothing
+		         //do nothing as some references may not exist yet
 			 }
 		} finally {
 			if (in!=null) {

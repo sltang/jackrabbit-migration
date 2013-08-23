@@ -15,12 +15,12 @@ As such, one can exercise more refined control over the repository source(s).</p
 copied is too large to fit into memory when using those functions. First, if the node involved is too large, there may be out of memory errors.
 Second, even if there is no memory issue, the underlying storage may impose restrictions on the size of data packets it receives. For instance, if 
 MySQL is used as the backend database (on Windows), when importing a large XML into a repository, it may fail with the following error:</p>
-<div>
-ERROR org.apache.jackrabbit.core.cluster.ClusterNode$WorkspaceUpdateChannel - Unexpected error while committing log entry.<br />
+<pre>
+ERROR org.apache.jackrabbit.core.cluster.ClusterNode$WorkspaceUpdateChannel - Unexpected error while committing log entry.
 java.lang.RuntimeException: Unable to reset the Stream.
 	at org.apache.jackrabbit.core.util.db.ConnectionHelper.execute(ConnectionHelper.java:525)
     ...
-</div>
+</pre>
 <p>  
 It turns out that the default value (1MB) of MySQL's max_allowed_packet on Windows is too small. You can fix that by setting max_allowed_packet to a 
 larger value in [mysqld] in my.ini.
@@ -33,7 +33,7 @@ those references when importing. Once that is done, import/export works without 
 <h3>Usage</h3>
 <pre>
 $java -jar jackrabbit-migration-query-1.0.0-jar-with-dependencies.jar
-Usage: java -jar jackrabbit-migration-query-tool-1.0.0-jar-with-dependgit encies.jar --src src --src-conf conf [--src-repo-path path] [--dest dest] [--dest-conf conf] 
+Usage: java -jar ackrabbit-migration-query-tool-1.0.0-jar-with-dependencies.jar encies.jar --src src --src-conf conf [--src-repo-path path] [--dest dest] [--dest-conf conf] 
 [--dest-repo-path path] [--cnd cnd] [--node-limit limit] [--query query] [--query-type type]
          --src source repository directory
          --src-conf source repository configuration file

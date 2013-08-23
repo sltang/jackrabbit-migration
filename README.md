@@ -33,7 +33,7 @@ those references when importing. Once that is done, import/export works without 
 <h3>Usage</h3>
 <pre>
 $java -jar jackrabbit-migration-query-1.0.0-jar-with-dependencies.jar
-Usage: java -jar ackrabbit-migration-query-tool-1.0.0-jar-with-dependencies.jar encies.jar --src src --src-conf conf [--src-repo-path path] [--dest dest] [--dest-conf conf] 
+Usage: java -jar jackrabbit-migration-query-tool-1.0.0-jar-with-dependencies.jar --src src --src-conf conf [--src-repo-path path] [--dest dest] [--dest-conf conf] 
 [--dest-repo-path path] [--cnd cnd] [--node-limit limit] [--query query] [--query-type type]
          --src source repository directory
          --src-conf source repository configuration file
@@ -46,7 +46,7 @@ Usage: java -jar ackrabbit-migration-query-tool-1.0.0-jar-with-dependencies.jar 
          --query JCR-SQL2 query to run in src. If --query is specified, then --dest, --dest-conf, --dest-repo-path and --cnd will be ignored.
          --query-type query type (SQL, XPATH, JCR-SQL2); default is JCR-SQL2"
 </pre>
-
+If only --src and --src-conf (and optionally --query-type) are specified, it runs in query mode where queries can be entered one at a time.
        
 <h3>Requirements</h3>
 <ul>

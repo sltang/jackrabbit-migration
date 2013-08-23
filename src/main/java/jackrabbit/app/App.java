@@ -17,7 +17,9 @@
 
 package jackrabbit.app;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.List;
 
 import jackrabbit.query.Querier;
@@ -59,7 +61,7 @@ public class App {
 	
     public static void main(String[] args) {
     	if (args.length == 0 || args.length == 1 && args[0].equals("-h")) {
-    		System.out.println("Usage: java -jar jackrabbit-migration-query-tool-1.0.0-jar-with-dependencies.jar " + 
+    		System.out.println("Usage: java -jar ackrabbit-migration-query-tool-1.0.0-jar-with-dependencies.jar " + 
     				"--src src --src-conf conf [--src-repo-path path] [--dest dest] [--dest-conf conf] [--dest-repo-path path] " +
     				"[--cnd cnd] [--node-limit limit] " +
     				"[--query query] [--query-type type]");
@@ -99,12 +101,12 @@ public class App {
     		}
     	}
     	boolean missingArgs=false;
-    	boolean isQueryMode=!query.isEmpty();
+    	
     	if (srcRepoDir.isEmpty()) {
     		missingArgs=true;
     		log.error("Please specify the --src option.");
     	}
-    	if (destRepoDir.isEmpty() && !isQueryMode) {
+    	if (destRepoDir.isEmpty() && !destConf.isEmpty()) {
     		missingArgs=true;
     		log.error("Please specify the --dest option.");
     	}
@@ -112,13 +114,13 @@ public class App {
     		missingArgs=true;
     		log.error("Please specify the --src-conf option.");
     	}
-    	if (destConf.isEmpty() && !isQueryMode) {
+    	if (destConf.isEmpty() && !destRepoDir.isEmpty()) {
     		missingArgs=true;
     		log.error("Please specify the --dest-conf option.");
     	}
     	
     	if (missingArgs) return;
-    	    	
+       	    	
     	SimpleCredentials credentials=new SimpleCredentials("username", "password".toCharArray());
 	
     	JackrabbitRepository src=null;
@@ -134,17 +136,19 @@ public class App {
 	    	SessionFactory srcSf=new SessionFactoryImpl(src, credentials);
 	    	Session srcSession=srcSf.getSession();
 	    	    	    	
-	    	if (isQueryMode) {
-	    		RowIterator rowIt=Querier.queryBySQLRow(srcSession, query, queryType);
-	    		while (rowIt.hasNext()) {
-	            	Row row = rowIt.nextRow();
-	            	Value[] values=row.getValues();
-	            	String s="";
-	            	for (Value value:values) {
-	            		s+="|"+value.getString();
-	            	}
-	            	System.out.println(s);
-	    		}
+	    	if (destConf.isEmpty()) {//query mode
+	    		BufferedReader in = new BufferedReader(new InputStreamReader(System.in, "UTF-8"));
+	    		if (query.isEmpty()) {	    			
+	    			while (true) {
+	    				System.out.print("Enter query: ");
+		    			String line=in.readLine();
+		    			if (line==null || line.isEmpty() || line.equalsIgnoreCase("quit") || line.equalsIgnoreCase("exit")) {
+		    				break;
+		    			}
+		    			runQuery(srcSession, line, queryType);
+		    		}
+    			} else {
+    				runQuery(srcSession, query, queryType);			}
 	    		srcSession.logout();
 	    		src.shutdown();
 	    		return;
@@ -210,5 +214,20 @@ public class App {
 			if (src!=null) src.shutdown();
 			if (dest!=null) dest.shutdown();
 		}
+    }
+    
+    private static void runQuery(Session srcSession, String query, String queryType) throws RepositoryException {
+    	long start=System.currentTimeMillis();
+		RowIterator rowIt=Querier.queryBySQLRow(srcSession, query, queryType);
+		while (rowIt.hasNext()) {
+        	Row row = rowIt.nextRow();
+        	Value[] values=row.getValues();
+        	String s="";
+        	for (Value value:values) {
+        		s+="|"+value.getString();
+        	}
+        	System.out.println(s);
+		}
+		System.out.println("Time: "+String.valueOf(System.currentTimeMillis()-start) +" milliseeconds");
     }
 }

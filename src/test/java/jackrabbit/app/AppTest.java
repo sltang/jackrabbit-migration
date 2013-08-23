@@ -19,12 +19,12 @@ package jackrabbit.app;
 
 import java.util.List;
 
+import jackrabbit.node.NodeCopier;
 import jackrabbit.repository.RepositoryFactory;
 import jackrabbit.repository.RepositoryFactoryImpl;
 import jackrabbit.repository.RepositoryManager;
 import jackrabbit.session.SessionFactory;
 import jackrabbit.session.SessionFactoryImpl;
-import jackrabbit.tool.NodeCopier;
 import jackrabbit.util.NodePathModifier;
 import jackrabbit.util.NodeUtils;
 import jackrabbit.util.PathTransformer;
@@ -32,7 +32,6 @@ import jackrabbit.util.RegexModifier;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.PathNotFoundException;
-import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
@@ -43,7 +42,6 @@ import javax.jcr.version.VersionException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.api.JackrabbitRepository;
-import org.apache.jackrabbit.core.TransientRepository;
 import org.junit.After;
 import org.junit.Before;
 

@@ -15,7 +15,7 @@
  * limitations under the License.
 */
 
-package jackrabbit.tool;
+package jackrabbit.node;
 
 import jackrabbit.util.NodeUtils;
 
@@ -120,7 +120,8 @@ public class NodeCopier {
 		createNodes(srcSession, destSession, destPath, addNodeType);
 		Node node=srcSession.getNode(srcPath);
 		int srcPathLength=srcPath.length();
-		Set<Map.Entry<String, Boolean>> descendants=NodeUtils.partition(node, limit);
+		NodePartitioner partitioner=new NodeSizePartitioner(limit);
+		Set<Map.Entry<String, Boolean>> descendants=partitioner.partition(node);
 		for (Map.Entry<String, Boolean> entry: descendants) {
 			String relPath=entry.getKey().substring(srcPathLength);
 			copy(srcSession, destSession, srcPath, destPath, relPath, entry.getValue(), addNodeType);

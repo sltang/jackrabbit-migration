@@ -22,13 +22,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 
+import jackrabbit.node.NodeCopier;
 import jackrabbit.query.Querier;
 import jackrabbit.repository.RepositoryFactory;
 import jackrabbit.repository.RepositoryFactoryImpl;
 import jackrabbit.repository.RepositoryManager;
 import jackrabbit.session.SessionFactory;
 import jackrabbit.session.SessionFactoryImpl;
-import jackrabbit.tool.NodeCopier;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;

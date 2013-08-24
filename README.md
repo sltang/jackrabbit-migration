@@ -1,7 +1,7 @@
 <h2>Apache Jackrabbit Migration and Query Tool</h2>
 <h3>Introduction</h3>
-<p>Apach Jackarbbit is an open-source implementation of Java Content Repository (JCR). Its flexibility in data schema and features make it a popular
-choice for storing structured and unstructured contents.
+<p>Apach Jackarbbit is an open-source implementation of Java Content Repository (JCR). Its flexibility in data schema and
+features have made it a popular choice for storing structured and unstructured contents.
 While the migration/backup tools provided by Jackrabbit are sufficient in most cases (http://wiki.apache.org/jackrabbit/BackupAndMigration), there 
 are situations where further customizations are needed.
 For instance, you may want to consolidate a number of repositories into a single one for ease of reporting or for clustering purposes. The goals
@@ -10,8 +10,9 @@ Using the tool from this project, you can specify the node path when you copy a 
 nodes under a single node. (There are some known performance issues if a node has too many child nodes.)
 This tool can be run in the command line to copy one repository to another or as a subnode of another repository. 
 You can also use this tool to run queries in SQL, XPATH or JCR-SQL2 against a repository. The tool can also be used as a standard library in your application. 
-As such, one can exercise more refined control over the repository source(s).</p>
-<p>Our migration tool is based on the exportSystemView and importXML functions in JCR. We explore the case where the node or repository to be 
+As such, one can exercise more refined control over the copying process.</p>
+<h3>Improvements</h3>
+<p>Our migration tool is based on the exportSystemView and importXML functions in JCR. We look at the case where the node or repository to be 
 copied is too large to fit into memory when using those functions. First, if the node involved is too large, there may be out of memory errors.
 Second, even if there is no memory issue, the underlying storage may impose restrictions on the size of data packets it receives. For instance, if 
 MySQL is used as the backend database (on Windows), when importing a large XML into a repository, it may fail with the following error:</p>
@@ -27,8 +28,9 @@ larger value in [mysqld] in my.ini.
 </p>
 <p>
 We address the issue by partitioning the source node to subnodes of size under a specified value, and run export and import on 
-each subnode separately. Since references may exist between partitioned subnodes, we need to make some adjustments to handle  
-those references when importing. Once that is done, import/export works without changing the max_allowed_packet value.
+each subnode separately.  Since references may exist between partitioned subnodes, you may run into some ItemNotFoundExceptions and ConstraintViolationExceptions 
+when importing. It is permissible to suppress those errors during import as references will be satisfied after the all the subnodes have been imported. 
+With a suitable choice of the subnode size, we can import and export without altering the max_allowed_packet value.
 </p>
 <h3>Usage</h3>
 <pre>
@@ -55,16 +57,16 @@ If only --src and --src-conf (and optionally --query-type) are specified, it run
 </ul>
 
 <h3>Build</h3> 
-<p>You can package it as a jar and include it as part of your application. Run</p> 
+You need Maven and package it as a jar to include it as part of your application:
 
-<p>mvn package</p>
+mvn package
 
-<p>You can package it to include all the dependencies so the jar can be executed by itself. Run</p>
+You can include all the dependencies in the jar and make it executable:
 
-<p>mvn package -Papplication</p>
+mvn package -Papplication
 
-<p>Please update the paths in the Unit tests as appropriate or skip the tests:</p>
-<p>mvn package -Dmaven.test.skip=true</p>
+It produces two jars. The jar-with-dependencies.jar contains all the dependencies. You can modify pom.xml to include other 
+dependencies as needed. To run the unit tests, please update the paths in the tests as appropriate or skip the tests when packaging.
 
 
 <h3>Jackrabbit Repository Configuration Files</h3>

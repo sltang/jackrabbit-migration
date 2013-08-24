@@ -9,5 +9,5 @@ import javax.jcr.RepositoryException;
 public interface NodePartitioner {
 
 	public Set<Map.Entry<String, Boolean>> partition(Node node) throws RepositoryException;
-	
+
 }

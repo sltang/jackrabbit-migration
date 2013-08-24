@@ -125,8 +125,7 @@ public class App {
 	
     	JackrabbitRepository src=null;
     	JackrabbitRepository dest=null;
-    	RepositoryFactory destRf=null;
-    	
+    	RepositoryFactory destRf=null;    	
 		RepositoryFactory srcRf=new RepositoryFactoryImpl(srcConf, srcRepoDir);
 		if (!destConf.isEmpty())
 			destRf=new RepositoryFactoryImpl(destConf, destRepoDir);

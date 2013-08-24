@@ -69,8 +69,7 @@ public class NodeUtils {
             explore(nodes.nextNode());
         }	
 	}
-		
-	
+			
 	/**
 	 * Get sum of lengths of the values of all properties of a node
 	 * @param properties

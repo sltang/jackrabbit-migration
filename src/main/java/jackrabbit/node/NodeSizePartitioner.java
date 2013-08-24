@@ -20,7 +20,6 @@ public class NodeSizePartitioner implements NodePartitioner {
 	public NodeSizePartitioner(long limit) {
 		this.limit=limit;
 	}
-	
 
 	/**
 	 * Partition a node based on the size of a node (and its descendants) 

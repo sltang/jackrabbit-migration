@@ -17,8 +17,6 @@
 
 package jackrabbit.node;
 
-import jackrabbit.util.NodeUtils;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

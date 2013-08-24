@@ -45,12 +45,9 @@ public class NodeUtilsTest {
 	protected static Log log=LogFactory.getLog(NodeUtilsTest.class);
 	
 	//change as needed
-	//private final String repoPath="/root/nodes/node";
-	//private final String repoDir="/repository";
-	//private final String conf="config/repository-mysql-1.xml";
-	private final String repoPath="/fsp_root/sites/a/aeellp";
-	private final String repoDir="/firmsites/repository/all-mysql-1";
-	private final String conf="config-dev/repository-mysql-1.xml";
+	private final String repoPath="/root/nodes/node";
+	private final String repoDir="/repository";
+	private final String conf="config/repository-mysql-1.xml";
 	
 	private Session ss;
 	private JackrabbitRepository repo;

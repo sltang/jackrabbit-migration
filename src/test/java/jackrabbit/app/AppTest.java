@@ -62,8 +62,7 @@ public class AppTest {
 	private final String destRepoDir=REPO_PATH+"/all-mysql-1";
 	private final String srcConf="config/repository_derby.xml";
 	private final String destConf="config/repository-mysql-1.xml";
-	private final String cndPath="config/base_nodetypes.cnd";
-	
+	private final String cndPath="config/base_nodetypes.cnd";	
 	private JackrabbitRepository src;
 	private JackrabbitRepository dest;
 	private SessionFactory srcSf;

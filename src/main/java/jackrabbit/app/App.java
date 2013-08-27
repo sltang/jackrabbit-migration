@@ -57,11 +57,12 @@ public class App {
 	private static String query="";
 	private static String queryType="";
 	private static long nodeLimit;
+	private static final String VERSION="0.1";
 	
 	
     public static void main(String[] args) {
     	if (args.length == 0 || args.length == 1 && args[0].equals("-h")) {
-    		System.out.println("Usage: java -jar ackrabbit-migration-query-tool-1.0.0-jar-with-dependencies.jar " + 
+    		System.out.println("Usage: java -jar ackrabbit-migration-query-tool-"+VERSION+"-jar-with-dependencies.jar " + 
     				"--src src --src-conf conf [--src-repo-path path] [--dest dest] [--dest-conf conf] [--dest-repo-path path] " +
     				"[--cnd cnd] [--node-limit limit] " +
     				"[--query query] [--query-type type]");

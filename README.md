@@ -32,8 +32,8 @@ those references when importing. Once that is done, import/export works without 
 </p>
 <h3>Usage</h3>
 <pre>
-$java -jar jackrabbit-migration-query-1.0.0-jar-with-dependencies.jar
-Usage: java -jar jackrabbit-migration-query-tool-1.0.0-jar-with-dependencies.jar --src src --src-conf conf [--src-repo-path path] [--dest dest] [--dest-conf conf] 
+$java -jar jackrabbit-migration-query-${version.number}-jar-with-dependencies.jar
+Usage: java -jar jackrabbit-migration-query-${version.number}-jar-with-dependencies.jar --src src --src-conf conf [--src-repo-path path] [--dest dest] [--dest-conf conf] 
 [--dest-repo-path path] [--cnd cnd] [--node-limit limit] [--query query] [--query-type type]
          --src source repository directory
          --src-conf source repository configuration file

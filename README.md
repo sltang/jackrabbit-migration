@@ -16,12 +16,14 @@ As such, one can exercise more refined control over the copying process.</p>
 copied is too large to fit into memory when using those functions. First, if the node involved is too large, there may be out of memory errors.
 Second, even if there is no memory issue, the underlying storage may impose restrictions on the size of data packets it receives. For instance, if 
 MySQL is used as the backend database (on Windows), when importing a large XML into a repository, it may fail with the following error:</p>
+<div class="highlight highlight-java">
 <pre>
 ERROR org.apache.jackrabbit.core.cluster.ClusterNode$WorkspaceUpdateChannel - Unexpected error while committing log entry.
 java.lang.RuntimeException: Unable to reset the Stream.
 	at org.apache.jackrabbit.core.util.db.ConnectionHelper.execute(ConnectionHelper.java:525)
     ...
 </pre>
+</div>
 <p>  
 It turns out that the default value (1MB) of MySQL's max_allowed_packet on Windows is too small. You can fix that by setting max_allowed_packet to a 
 larger value in [mysqld] in my.ini.
@@ -33,21 +35,23 @@ when importing. It is permissible to suppress those errors during import as refe
 With a suitable choice of the subnode size, we can import and export without altering the max_allowed_packet value.
 </p>
 <h3>Usage</h3>
+<div class="highlight highlight-java">
 <pre>
 $java -jar jackrabbit-migration-query-${version.number}-jar-with-dependencies.jar
 Usage: java -jar jackrabbit-migration-query-${version.number}-jar-with-dependencies.jar --src src --src-conf conf [--src-repo-path path] [--dest dest] [--dest-conf conf] 
 [--dest-repo-path path] [--cnd cnd] [--node-limit limit] [--query query] [--query-type type]
          --src source repository directory
          --src-conf source repository configuration file
-         --src-repo-path path to source node to copy from; default is "/"
+         --src-repo-path path to source node to copy from; default is /
          --dest destination repository directory
          --dest-conf source repository configuration file
-         --dest-repo-path path to destination node to copy to; default is "/"
+         --dest-repo-path path to destination node to copy to; default is /
          --node-limit size (in bytes) to partition nodes with before copying. If it is not supplied, no partitioning is performed
          --cnd common node type definition file
          --query JCR-SQL2 query to run in src. If --query is specified, then --dest, --dest-conf, --dest-repo-path and --cnd will be ignored.
          --query-type query type (SQL, XPATH, JCR-SQL2); default is JCR-SQL2"
 </pre>
+</div>
 If only --src and --src-conf (and optionally --query-type) are specified, it runs in query mode where queries can be entered one at a time.
        
 <h3>Requirements</h3>

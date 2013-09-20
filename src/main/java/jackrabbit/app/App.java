@@ -56,6 +56,10 @@ public class App {
 	private static String cndPath="";
 	private static String query="";
 	private static String queryType="";
+	private static String srcUser="";
+	private static String srcPasswd="";
+	private static String destUser="";
+	private static String destPasswd="";
 	private static long nodeLimit;
 	private static final String VERSION="0.1";
 	
@@ -63,15 +67,20 @@ public class App {
     public static void main(String[] args) {
     	if (args.length == 0 || args.length == 1 && args[0].equals("-h")) {
     		System.out.println("Usage: java -jar ackrabbit-migration-query-tool-"+VERSION+"-jar-with-dependencies.jar " + 
-    				"--src src --src-conf conf [--src-repo-path path] [--dest dest] [--dest-conf conf] [--dest-repo-path path] " +
+    				"--src src --src-conf conf [--src-repo-path path] [--src-user src_user] [--src-passwd src_pw] "+ 
+    				"[--dest-user dest_user] [--dest-passwd dest_pw] [--dest dest] [--dest-conf conf] [--dest-repo-path path] " +
     				"[--cnd cnd] [--node-limit limit] " +
-    				"[--query query] [--query-type type]");
+    				"[--query-type type] [--query query]");
     		System.out.println("\t --src source repository directory");
     		System.out.println("\t --src-conf source repository configuration file");
     		System.out.println("\t --src-repo-path path to source node to copy from; default is \"/\"");
+    		System.out.println("\t --src-user source repository login");
+    		System.out.println("\t --src-password source repository password");
     		System.out.println("\t --dest destination repository directory");    		
-    		System.out.println("\t --dest-conf source repository configuration file");    		
+    		System.out.println("\t --dest-conf destination repository configuration file");    		
     		System.out.println("\t --dest-repo-path path to destination node to copy to; default is \"/\"");
+    		System.out.println("\t --dest-user destination repository login");
+    		System.out.println("\t --dest-password destination repository password");
     		System.out.println("\t --node-limit size to partition nodes with before copying. If it is not supplied, no partitioning is performed");
     		System.out.println("\t --cnd common node type definition file");
     		System.out.println("\t --query query to run in src. If --query is specified, then --dest, --dest-conf, --dest-repo-path and --cnd will be ignored.");
@@ -91,6 +100,14 @@ public class App {
     			srcRepoPath=args[i+1];
     		} else if (args[i].equals("--dest-repo-path") && i+1<args.length) {
     			destRepoPath=args[i+1];
+    		} else if (args[i].equals("--src-user") && i+1<args.length) {
+    			srcUser=args[i+1];
+    		} else if (args[i].equals("--src-passwd") && i+1<args.length) {
+    			srcPasswd=args[i+1];
+    		} else if (args[i].equals("--dest-user") && i+1<args.length) {
+    			destUser=args[i+1];
+    		} else if (args[i].equals("--dest-passwd") && i+1<args.length) {
+    			destPasswd=args[i+1];
     		} else if (args[i].equals("--node-limit") && i+1<args.length) {
     			nodeLimit=Long.parseLong(args[i+1]);
     		} else if (args[i].equals("--cnd") && i+1<args.length) {
@@ -122,8 +139,9 @@ public class App {
     	
     	if (missingArgs) return;
        	    	
-    	SimpleCredentials credentials=new SimpleCredentials("username", "password".toCharArray());
-	
+    	SimpleCredentials credentials=new SimpleCredentials(srcUser, srcPasswd.toCharArray());
+    	SimpleCredentials destCredentials=new SimpleCredentials(destUser, destPasswd.toCharArray());
+    	
     	JackrabbitRepository src=null;
     	JackrabbitRepository dest=null;
     	RepositoryFactory destRf=null;    	
@@ -145,17 +163,26 @@ public class App {
 		    			if (line==null || line.isEmpty() || line.equalsIgnoreCase("quit") || line.equalsIgnoreCase("exit")) {
 		    				break;
 		    			}
-		    			runQuery(srcSession, line, queryType);
+		    			try {
+		    				runQuery(srcSession, line, queryType);
+		    			} catch (RepositoryException e) {
+		    				log.error(e.getMessage(), e);
+		    			}
 		    		}
     			} else {
-    				runQuery(srcSession, query, queryType);			}
+    				try {
+    					runQuery(srcSession, query, queryType);		
+    				} catch (RepositoryException e) {
+	    				log.error(e.getMessage(), e);
+	    			}
+    			}
 	    		srcSession.logout();
 	    		src.shutdown();
 	    		return;
 	    	}
 	    	
 	    	dest=destRf.getRepository();
-	    	SessionFactory destSf=new SessionFactoryImpl(dest, credentials); 
+	    	SessionFactory destSf=new SessionFactoryImpl(dest, destCredentials); 
 	    	Session destSession=destSf.getSession();
 	    	
 	    	try {

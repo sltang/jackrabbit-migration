@@ -21,9 +21,11 @@ import javax.jcr.NodeIterator;
 import javax.jcr.query.RowIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.Value;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
+import javax.jcr.query.Row;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -56,5 +58,22 @@ public class Querier {
         RowIterator it = result.getRows();
         return it;
 	}
-
+	
+	public static String formatQueryResults(RowIterator it) throws RepositoryException {
+		String results="\n";
+		while (it.hasNext()) {
+        	Row row = it.nextRow();
+        	Value[] values=row.getValues();
+        	String s="";
+        	for (Value value:values) {
+        		if (value!=null)
+        			s+="| " + value.getString() + " ";
+        		else
+        			s+="| null ";
+        	}
+        	results+=s+"\n";
+		}
+		return results;
+	}
+ 
 }

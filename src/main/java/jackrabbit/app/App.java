@@ -142,23 +142,28 @@ public class App {
     	SimpleCredentials credentials=new SimpleCredentials(srcUser, srcPasswd.toCharArray());
     	SimpleCredentials destCredentials=new SimpleCredentials(destUser, destPasswd.toCharArray());
     	
-    	JackrabbitRepository src=null;
     	JackrabbitRepository dest=null;
     	RepositoryFactory destRf=null;    	
 		RepositoryFactory srcRf=new RepositoryFactoryImpl(srcConf, srcRepoDir);
-		if (!destConf.isEmpty())
+		if (!destConf.isEmpty()) {
 			destRf=new RepositoryFactoryImpl(destConf, destRepoDir);
+		}
     	        	
     	try {
-	    	src=srcRf.getRepository();
+    		final JackrabbitRepository src=srcRf.getRepository();
 	    	SessionFactory srcSf=new SessionFactoryImpl(src, credentials);
-	    	Session srcSession=srcSf.getSession();
-	    	    	    	
+	    	final Session srcSession=srcSf.getSession();	    	    	    	
 	    	if (destConf.isEmpty()) {//query mode
+	    		Runtime.getRuntime().addShutdownHook(new Thread() {
+	    			public void run() {
+	    			    srcSession.logout();
+	    	    		src.shutdown();
+	    			}
+	    		});
 	    		BufferedReader in = new BufferedReader(new InputStreamReader(System.in, "UTF-8"));
 	    		if (query.isEmpty()) {	    			
 	    			while (true) {
-	    				System.out.print("Enter query: ");
+	    				System.out.print(">");
 		    			String line=in.readLine();
 		    			if (line==null || line.isEmpty() || line.equalsIgnoreCase("quit") || line.equalsIgnoreCase("exit")) {
 		    				break;
@@ -176,8 +181,6 @@ public class App {
 	    				log.error(e.getMessage(), e);
 	    			}
     			}
-	    		srcSession.logout();
-	    		src.shutdown();
 	    		return;
 	    	}
 	    	
@@ -238,7 +241,6 @@ public class App {
 		} catch (RepositoryException e) {
 			log.error(e.getMessage(), e);
 		} finally {
-			if (src!=null) src.shutdown();
 			if (dest!=null) dest.shutdown();
 		}
     }
@@ -246,15 +248,7 @@ public class App {
     private static void runQuery(Session srcSession, String query, String queryType) throws RepositoryException {
     	long start=System.currentTimeMillis();
 		RowIterator rowIt=Querier.queryBySQLRow(srcSession, query, queryType);
-		while (rowIt.hasNext()) {
-        	Row row = rowIt.nextRow();
-        	Value[] values=row.getValues();
-        	String s="";
-        	for (Value value:values) {
-        		s+="|"+value.getString();
-        	}
-        	System.out.println(s);
-		}
+		System.out.println(Querier.formatQueryResults(rowIt));
 		System.out.println("Time: "+String.valueOf(System.currentTimeMillis()-start) +" milliseeconds");
     }
 }

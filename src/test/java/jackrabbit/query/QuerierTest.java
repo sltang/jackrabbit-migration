@@ -22,8 +22,6 @@ import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
-import javax.jcr.Value;
-import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
 
 import jackrabbit.repository.RepositoryFactory;

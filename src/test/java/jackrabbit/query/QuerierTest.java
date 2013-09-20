@@ -72,15 +72,7 @@ public class QuerierTest {
 	@Test
 	public void testQueryByPropertyRow() throws Exception {
 		RowIterator it=Querier.queryBySQLRow(session, "select [ns:property] from [ns:child] as child where ISDESCENDANTNODE(child, [/root/nodes/node]) and ([ns:property1]='value1' or [ns:property2]='value2')");
-		while (it.hasNext()) {
-        	Row row = it.nextRow();
-        	Value[] values=row.getValues();
-        	String s="";
-        	for (Value value:values) {
-        		s+="|"+value.getString();
-        	}
-        	log.info(s);
-		}
+		log.info(Querier.formatQueryResults(it));
 	}
 	
 	@Test
@@ -90,6 +82,12 @@ public class QuerierTest {
         	Node node = contents.nextNode();
         	log.info(node.getPath());
         }
+	}
+	
+	@Test
+	public void testXpathSearch() throws RepositoryException {
+		RowIterator it=Querier.queryBySQLRow(session, "/path/to/node", "xpath");
+		log.info(Querier.formatQueryResults(it));
 	}
 	
 	@After

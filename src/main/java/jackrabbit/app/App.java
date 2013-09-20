@@ -34,8 +34,6 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
-import javax.jcr.Value;
-import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
 
 import org.apache.commons.logging.Log;

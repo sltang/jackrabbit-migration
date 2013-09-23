@@ -146,18 +146,19 @@ public class App {
 		if (!destConf.isEmpty()) {
 			destRf=new RepositoryFactoryImpl(destConf, destRepoDir);
 		}
-    	        	
+    	
+		
     	try {
     		final JackrabbitRepository src=srcRf.getRepository();
 	    	SessionFactory srcSf=new SessionFactoryImpl(src, credentials);
-	    	final Session srcSession=srcSf.getSession();	    	    	    	
+	    	final Session srcSession=srcSf.getSession();	  
+	    	Runtime.getRuntime().addShutdownHook(new Thread() {
+    			public void run() {
+    			    srcSession.logout();
+    	    		src.shutdown();
+    			}
+    		});
 	    	if (destConf.isEmpty()) {//query mode
-	    		Runtime.getRuntime().addShutdownHook(new Thread() {
-	    			public void run() {
-	    			    srcSession.logout();
-	    	    		src.shutdown();
-	    			}
-	    		});
 	    		BufferedReader in = new BufferedReader(new InputStreamReader(System.in, "UTF-8"));
 	    		if (query.isEmpty()) {	    			
 	    			while (true) {
@@ -201,10 +202,7 @@ public class App {
 				log.error(e.getMessage(), e);
 			} catch (RepositoryException e) {
 				log.error(e.getMessage(), e);
-			} finally {
-				srcSession.logout();
-		    	destSession.logout();
-			}
+			} 
 	
 	    	List<String> destWkspaces=RepositoryManager.getDestinationWorkspaces(srcSession, destSession);
 	    	

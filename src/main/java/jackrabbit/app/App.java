@@ -73,12 +73,12 @@ public class App {
     		System.out.println("\t --src-conf source repository configuration file");
     		System.out.println("\t --src-repo-path path to source node to copy from; default is \"/\"");
     		System.out.println("\t --src-user source repository login");
-    		System.out.println("\t --src-password source repository password");
+    		System.out.println("\t --src-passwd source repository password");
     		System.out.println("\t --dest destination repository directory");    		
     		System.out.println("\t --dest-conf destination repository configuration file");    		
     		System.out.println("\t --dest-repo-path path to destination node to copy to; default is \"/\"");
     		System.out.println("\t --dest-user destination repository login");
-    		System.out.println("\t --dest-password destination repository password");
+    		System.out.println("\t --dest-passwd destination repository password");
     		System.out.println("\t --node-limit size to partition nodes with before copying. If it is not supplied, no partitioning is performed");
     		System.out.println("\t --cnd common node type definition file");
     		System.out.println("\t --query query to run in src. If --query is specified, then --dest, --dest-conf, --dest-repo-path and --cnd will be ignored.");

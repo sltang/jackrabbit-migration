@@ -5,14 +5,20 @@ customization features that make it easier to use. See <a href="http://github.co
 <h3>Usage</h3>
 <pre>
 $java -jar jackrabbit-migration-query-${version.number}-jar-with-dependencies.jar
-Usage: java -jar jackrabbit-migration-query-${version.number}-jar-with-dependencies.jar --src src --src-conf conf [--src-repo-path path] [--dest dest] [--dest-conf conf] 
-[--dest-repo-path path] [--cnd cnd] [--node-limit limit] [--query query] [--query-type type]
+Usage: java -jar ackrabbit-migration-query-tool-0.1-jar-with-dependencies.jar --src src --src-conf c
+onf [--src-repo-path path] [--src-user src_user] [--src-passwd src_pw] [--dest-user dest_user] [--de
+st-passwd dest_pw] [--dest dest] [--dest-conf conf] [--dest-repo-path path] [--cnd cnd] [--node-limi
+t limit] [--query-type type] [--query query]
          --src source repository directory
          --src-conf source repository configuration file
-         --src-repo-path path to source node to copy from; default is /
+         --src-repo-path path to source node to copy from; default is "/"
+         --src-user source repository login
+         --src-password source repository password
          --dest destination repository directory
-         --dest-conf source repository configuration file
-         --dest-repo-path path to destination node to copy to; default is /
+         --dest-conf destination repository configuration file
+         --dest-repo-path path to destination node to copy to; default is "/"
+         --dest-user destination repository login
+         --dest-password destination repository password
          --node-limit size (in bytes) to partition nodes with before copying. If it is not supplied, no partitioning is performed
          --cnd common node type definition file
          --query JCR-SQL2 query to run in src. If --query is specified, then --dest, --dest-conf, --dest-repo-path and --cnd will be ignored.
